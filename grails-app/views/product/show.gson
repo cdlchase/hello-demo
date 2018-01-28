@@ -1,0 +1,7 @@
+import hello.demo.Product
+
+model {
+	Product product
+}
+
+json tmpl.product(product)
