@@ -8,6 +8,7 @@ class UrlMappings {
                 '/search'(controller: 'product', action: 'search')
             }
         }
+
         delete "/$controller/$id(.$format)?"(action:"delete")
         get "/$controller(.$format)?"(action:"index")
         get "/$controller/$id(.$format)?"(action:"show")

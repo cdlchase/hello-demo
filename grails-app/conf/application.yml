@@ -89,8 +89,8 @@ environments:
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     production:
         dataSource:
-            dbCreate: none
-            url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+            dbCreate: update
+            url: jdbc:h2:./prodDbDemo;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             properties:
                 jmxEnabled: true
                 initialSize: 5
@@ -109,3 +109,81 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+---
+grails:
+    plugin:
+        springsecurity:
+            userLookup:
+                userDomainClassName: hello.demo.User
+                authorityJoinClassName: hello.demo.UserRole
+            authority:
+                className: hello.demo.Role
+            filterChain:
+                chainMap:
+                    -
+                        pattern: /assets/**
+                        filters: none
+                    -
+                        pattern: /**/js/**
+                        filters: none
+                    -
+                        pattern: /**/css/**
+                        filters: none
+                    -
+                        pattern: /**/images/**
+                        filters: none
+                    -
+                        pattern: /products/**
+                        filters: none
+                    - # Stateless chain
+                        pattern: /api/**
+                        filters: JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter
+                    - # Traditional Chain
+                        pattern: /**
+                        filters: JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter
+                controllerAnnotations:
+                    staticRules:
+                        -
+                            pattern: /
+                            access:
+                                - permitAll
+                        -
+                            pattern: /error
+                            access:
+                                - permitAll
+                        -
+                            pattern: /index
+                            access:
+                                - permitAll
+                        -
+                            pattern: /index.gsp
+                            access:
+                                - permitAll
+                        -
+                            pattern: /shutdown
+                            access:
+                                - permitAll
+                        -
+                            pattern: /assets/**
+                            access:
+                                - permitAll
+                        -
+                            pattern: /**/js/**
+                            access:
+                                - permitAll
+                        -
+                            pattern: /**/css/**
+                            access:
+                                - permitAll
+                        -
+                            pattern: /**/images/**
+                            access:
+                                - permitAll
+                        -
+                            pattern: /**/favicon.ico/**
+                            access:
+                                - permitAll
+                        -
+                            pattern: /api/products/**
+                            access:
+                                - ROLE_DRIVER
